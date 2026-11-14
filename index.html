@@ -40,7 +40,7 @@
     .btn-danger { background: #FEE2E2; color: #991B1B; }
     .pkg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px; margin-bottom: 12px; }
     .pkg { border: 2px solid #F3F4F6; border-radius: 12px; padding: 12px; cursor: pointer; background: #FFFBEB; transition: 0.15s; }
-    .pkg.selected { border-color: var(--gold); background: #FEF3C7; box-shadow: 0 0 0 2px rgba(245,158,11,0.2); }
+    .pkg.selected, .pkg.active { border-color: var(--gold); background: #FEF3C7; box-shadow: 0 0 0 2px rgba(245,158,11,0.2); }
     .pkg-name { font-weight: 700; font-size: 0.95rem; }
     .pkg-price { font-size: 1.1rem; font-weight: 800; color: var(--gold-dark); margin: 4px 0; }
     .pkg-meta { font-size: 0.8rem; color: var(--muted); }
@@ -115,7 +115,7 @@
       <h2>Bước 3: Thanh toán &amp; Hỗ trợ</h2>
       <div class="pay-box">
         <div><b>Chuyển khoản / MoMo:</b> <code>0948344850</code> — <b>Nguyễn Đức Tấn Lộc</b></div>
-        <div class="muted mt8">Nội dung CK: <b id="payNote">TLOC LOCKET</b></div>
+        <div class="mt8"><b>Gói đã chọn:</b> <b id="payPkgName">Gói Dùng Thử</b></div><div class="mt8"><b>Số tiền cần thanh toán:</b> <b id="payAmount" style="color:var(--gold-dark); font-size:1.05rem;">0đ</b> <span id="payDiscountNote" class="muted"></span></div><div class="muted mt8">Nội dung CK: <b id="payNote">TLOC LOCKET</b></div>
         <div class="row mt8">
           <button class="btn btn-outline btn-sm" onclick="copyText('0948344850')">Copy SĐT/STK</button>
           <button class="btn btn-gold btn-sm" onclick="openZalo()">Liên hệ Zalo 0948344850</button>
@@ -189,12 +189,12 @@
 <script>
 const DEFAULT_BASE = 'https:/' + '/uplocket.io.vn';
 const DEFAULT_PACKAGES = [
-  { id: 'trial_3d', name: 'Gói Dùng Thử', duration: '3 ngày', price: 0, minRetailPrice: 0 },
-  { id: 'standard_3m', name: 'Gói Thường 3 Tháng', duration: '3 tháng', price: 20000, minRetailPrice: 15000 },
-  { id: 'standard_8m', name: 'Gói Thường 8 Tháng', duration: '8 tháng', price: 50000, minRetailPrice: 35000 },
-  { id: 'vip_1y', name: 'Gói VIP 1 Năm', duration: '1 năm', price: 89000, minRetailPrice: 60000 },
-  { id: 'vip_lifetime', name: 'Gói VIP Vĩnh Viễn', duration: 'Vĩnh viễn', price: 119000, minRetailPrice: 80000 },
-  { id: 'android_5m', name: 'Gói Android APK', duration: '5 tháng', price: 50000, minRetailPrice: 35000 }
+  { id: 'trial_3d', name: 'Gói Dùng Thử', duration: '3 ngày', price: 0, minRetailPrice: 0, isTrial: true, creditCost: 0 },
+  { id: 'standard_3m', name: 'Gói Thường 3 Tháng', duration: '90 ngày', videoMode: '5s', price: 20000, minRetailPrice: 15000, creditCost: 1 },
+  { id: 'standard_8m', name: 'Gói Thường 8 Tháng', duration: '240 ngày', videoMode: '15s', price: 50000, minRetailPrice: 35000, creditCost: 2 },
+  { id: 'vip_1y', name: 'Gói VIP 1 Năm', duration: '365 ngày', videoMode: '30s', price: 89000, minRetailPrice: 60000, creditCost: 3 },
+  { id: 'vip_lifetime', name: 'Gói VIP Vĩnh Viễn', duration: 'Trọn đời 9999 ngày', lifetime: true, videoMode: '30s', price: 119000, minRetailPrice: 80000, creditCost: 5 },
+  { id: 'android_5m', name: 'Gói Android APK', duration: '150 ngày • Cài file APK VIP', videoMode: '15s', price: 50000, minRetailPrice: 35000, creditCost: 2 }
 ];
 
 let state = {
@@ -304,7 +304,7 @@ function renderProfile(p) {
   `;
 }
 
-async function loadPackages() {
+async function loadPackages() { if (!state.packages || !state.packages.length) state.packages = [...DEFAULT_PACKAGES]; renderPackages(); renderAdminPackages(); if (!getApiKey()) return;
   try {
     const res = await apiFetch('/api/v1/packages');
     const list = res.packages || res.data || res;
@@ -332,7 +332,7 @@ function renderPackages() {
   const grid = document.getElementById('packageGrid');
   grid.innerHTML = state.packages.map(pkg => {
     const price = getEffectivePrice(pkg);
-    const sel = pkg.id === state.selectedPkgId ? 'selected' : '';
+    const sel = pkg.id === state.selectedPkgId ? 'selected active' : ''; const metaParts = [pkg.duration, pkg.isTrial ? 'Dùng thử' : '', pkg.videoMode ? 'Video ' + pkg.videoMode : '', pkg.creditCost !== undefined ? pkg.creditCost + ' credit' : ''].filter(Boolean).join(' • ');
     return `<div class="pkg ${sel}" onclick="selectPackage('${pkg.id}')">
       <div class="pkg-name">${pkg.name}</div>
       <div class="pkg-price">${fmtMoney(price)}</div>
@@ -379,7 +379,7 @@ function updatePriceSummary() {
     const finalPrice = Math.max(0, Math.round(price * (100 - state.appliedCoupon.pct) / 100));
     text += ` → Giảm ${state.appliedCoupon.pct}% (${state.appliedCoupon.code}): ${fmtMoney(finalPrice)}`;
   }
-  document.getElementById('priceSummary').textContent = text;
+  document.getElementById('priceSummary').textContent = text; const finalPrice = state.appliedCoupon ? Math.max(0, Math.round(price * (100 - state.appliedCoupon.pct) / 100)) : price; const payPkgEl = document.getElementById('payPkgName'); if (payPkgEl) payPkgEl.textContent = pkg.name; const payAmtEl = document.getElementById('payAmount'); if (payAmtEl) payAmtEl.textContent = fmtMoney(finalPrice); const payDiscEl = document.getElementById('payDiscountNote'); if (payDiscEl) payDiscEl.textContent = state.appliedCoupon ? '(Đã giảm ' + state.appliedCoupon.pct + '% - ' + state.appliedCoupon.code + ')' : '';
 }
 
 async function exportDns() {
