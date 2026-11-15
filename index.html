@@ -148,10 +148,10 @@
     <div class="card">
       <h2>Số dư &amp; Lượt kích hoạt (GET /api/v1/credits)</h2>
       <div class="stat-grid">
-        <div class="stat"><span class="muted">Số lượt còn lại (Credits)</span><b id="statCredits">--</b></div>
+        <div class="stat"><span class="muted">Số lượt còn lại (Credits)</span><b id="statCredits">2 lượt còn lại</b></div>
         <div class="stat"><span class="muted">Số dư hoa hồng (Balance)</span><b id="statBalance">--</b></div>
       </div>
-      <button class="btn btn-outline btn-sm" onclick="loadCredits()">Làm mới số dư</button>
+      <div class="muted mt8" id="ctvDefaultInfo">Đại Lý Bạc: <b>loc</b> — 2 lượt còn lại, 3 khách đang dùng</div><button class="btn btn-outline btn-sm mt8" onclick="loadCredits()">Làm mới số dư</button>
     </div>
 
     <div class="card">
@@ -171,7 +171,7 @@
 
     <div class="card">
       <h2>Quản lý giá bán lẻ gói (đối chiếu minRetailPrice)</h2>
-      <div id="adminPkgList"></div>
+      <div class="row mt8" style="gap:8px;flex-wrap:wrap;"><button class="btn btn-outline btn-sm" onclick="applyPricePreset('uplocket')">Bảng giá Chuẩn UpLocket (0đ / 20k / 30k / 49k / 99k / 149k)</button><button class="btn btn-outline btn-sm" onclick="applyPricePreset('tloc')">Bảng giá Lẻ TLoc (0đ / 20k / 50k / 89k / 119k)</button></div><div id="adminPkgList"></div>
     </div>
 
     <div class="card">
@@ -189,17 +189,17 @@
 <script>
 const DEFAULT_BASE = 'https:/' + '/uplocket.io.vn';
 const DEFAULT_PACKAGES = [
-  { id: 'trial_3d', name: 'Gói Dùng Thử', duration: '3 ngày', price: 0, minRetailPrice: 0, isTrial: true, creditCost: 0 },
-  { id: 'standard_3m', name: 'Gói Thường 3 Tháng', duration: '90 ngày', videoMode: '5s', price: 20000, minRetailPrice: 15000, creditCost: 1 },
-  { id: 'standard_8m', name: 'Gói Thường 8 Tháng', duration: '240 ngày', videoMode: '15s', price: 50000, minRetailPrice: 35000, creditCost: 2 },
-  { id: 'vip_1y', name: 'Gói VIP 1 Năm', duration: '365 ngày', videoMode: '30s', price: 89000, minRetailPrice: 60000, creditCost: 3 },
-  { id: 'vip_lifetime', name: 'Gói VIP Vĩnh Viễn', duration: 'Trọn đời 9999 ngày', lifetime: true, videoMode: '30s', price: 119000, minRetailPrice: 80000, creditCost: 5 },
-  { id: 'android_5m', name: 'Gói Android APK', duration: '150 ngày • Cài file APK VIP', videoMode: '15s', price: 50000, minRetailPrice: 35000, creditCost: 2 }
+{ id: 'pkg_trial_3d', code: 'TRIAL_3D', name: 'Gói dùng thử (Trial)', price: 0, originalPrice: 79000, minRetailPrice: 0, durationDays: 3, duration: '3 ngày', isTrial: true, lifetime: false, creditCost: 0, videoMode: '30s', aiQuota: 0, badge: 'Trial' },
+  { id: 'pkg_gold_1y', code: 'GOLD_1Y', name: 'Locket Gold 1 Năm', price: 20000, originalPrice: 399000, minRetailPrice: 20000, durationDays: 365, duration: '365 ngày', isTrial: false, lifetime: false, creditCost: 2, videoMode: '30s', aiQuota: 1, badge: 'Ưu đãi lớn' },
+  { id: 'pkg_gold_lifetime', code: 'GOLD_LIFETIME', name: 'Locket Gold Vĩnh Viễn', price: 30000, originalPrice: 599000, minRetailPrice: 30000, durationDays: 9999, duration: 'Trọn đời', isTrial: false, lifetime: true, creditCost: 3, videoMode: '30s', aiQuota: 1, badge: 'VIP Trọn Đời' },
+  { id: 'pkg_ctv_1m', code: 'CTV_1M', name: 'Gói CTV 1 Tháng', price: 49000, originalPrice: 79000, minRetailPrice: 45000, durationDays: 30, duration: '30 ngày', isTrial: false, lifetime: false, creditCost: 1, videoMode: '30s', aiQuota: 1, badge: 'Phổ biến' },
+  { id: 'pkg_ctv_3m', code: 'CTV_3M', name: 'Gói CTV 3 Tháng', price: 99000, originalPrice: 199000, minRetailPrice: 89000, durationDays: 90, duration: '90 ngày', isTrial: false, lifetime: false, creditCost: 2, videoMode: '30s', aiQuota: 1, badge: 'Bán chạy' },
+  { id: 'pkg_ctv_6m', code: 'CTV_6M', name: 'Gói CTV 6 Tháng', price: 149000, originalPrice: 299000, minRetailPrice: 129000, durationDays: 180, duration: '180 ngày', isTrial: false, lifetime: false, creditCost: 2, videoMode: '30s', aiQuota: 1, badge: 'Tiết kiệm' }
 ];
 
 let state = {
   packages: [...DEFAULT_PACKAGES],
-  selectedPkgId: 'vip_1y',
+  selectedPkgId: 'pkg_gold_1y',
   lookedUpUser: null,
   appliedCoupon: null
 };
@@ -314,7 +314,7 @@ async function loadPackages() { if (!state.packages || !state.packages.length) s
         name: p.name || p.packageName,
         duration: p.duration || '',
         price: Number(p.retailPrice ?? p.price ?? 0),
-        minRetailPrice: Number(p.minRetailPrice ?? 0)
+        minRetailPrice: Number(p.minRetailPrice ?? 0), durationDays: p.durationDays ?? (DEFAULT_PACKAGES.find(d => d.id === (p.id || p.packageId) || d.code === p.code || d.name === (p.name || p.packageName)) || {}).durationDays, originalPrice: p.originalPrice ?? (DEFAULT_PACKAGES.find(d => d.durationDays === p.durationDays || d.id === (p.id || p.packageId)) || {}).originalPrice, videoMode: p.videoMode || '30s', aiQuota: p.aiQuota ?? (DEFAULT_PACKAGES.find(d => d.durationDays === p.durationDays || d.id === (p.id || p.packageId)) || {}).aiQuota ?? 1, badge: p.badge || (DEFAULT_PACKAGES.find(d => d.durationDays === p.durationDays || d.id === (p.id || p.packageId)) || {}).badge || ''
       }));
       state.selectedPkgId = state.packages[0].id;
     }
@@ -334,9 +334,9 @@ function renderPackages() {
     const price = getEffectivePrice(pkg);
     const sel = pkg.id === state.selectedPkgId ? 'selected active' : ''; const metaParts = [pkg.duration, pkg.isTrial ? 'Dùng thử' : '', pkg.videoMode ? 'Video ' + pkg.videoMode : '', pkg.creditCost !== undefined ? pkg.creditCost + ' credit' : ''].filter(Boolean).join(' • ');
     return `<div class="pkg ${sel}" onclick="selectPackage('${pkg.id}')">
-      <div class="pkg-name">${pkg.name}</div>
-      <div class="pkg-price">${fmtMoney(price)}</div>
-      <div class="pkg-meta">${pkg.duration || 'Gói Locket Gold'}</div>
+      <div class="pkg-name">${pkg.name} ${pkg.badge ? `<span class="badge badge-ACTIVE" style="font-size:10px;margin-left:4px">${pkg.badge}</span>` : ''}</div>
+      <div class="pkg-price">${price === 0 ? 'Miễn phí' : fmtMoney(price)}${pkg.originalPrice ? ` <span class="muted" style="text-decoration:line-through;font-size:12px;font-weight:400">${fmtMoney(pkg.originalPrice)}</span>` : ''}</div>
+      <div class="pkg-meta">${pkg.duration || 'Gói Locket Gold'} • Video ${pkg.videoMode || '30s'} • ${pkg.aiQuota ?? 0} AI/ngày</div>
     </div>`;
   }).join('');
   updatePriceSummary();
@@ -382,17 +382,17 @@ function updatePriceSummary() {
   document.getElementById('priceSummary').textContent = text; const finalPrice = state.appliedCoupon ? Math.max(0, Math.round(price * (100 - state.appliedCoupon.pct) / 100)) : price; const payPkgEl = document.getElementById('payPkgName'); if (payPkgEl) payPkgEl.textContent = pkg.name; const payAmtEl = document.getElementById('payAmount'); if (payAmtEl) payAmtEl.textContent = fmtMoney(finalPrice); const payDiscEl = document.getElementById('payDiscountNote'); if (payDiscEl) payDiscEl.textContent = state.appliedCoupon ? '(Đã giảm ' + state.appliedCoupon.pct + '% - ' + state.appliedCoupon.code + ')' : '';
 }
 
-async function exportDns() {
+function applyPricePreset(mode) { const presets = { uplocket: { pkg_trial_3d: 0, pkg_gold_1y: 20000, pkg_gold_lifetime: 30000, pkg_ctv_1m: 49000, pkg_ctv_3m: 99000, pkg_ctv_6m: 149000 }, tloc: { pkg_trial_3d: 0, pkg_gold_1y: 20000, pkg_gold_lifetime: 50000, pkg_ctv_1m: 50000, pkg_ctv_3m: 89000, pkg_ctv_6m: 119000 } }; const map = presets[mode]; if (!map) return; localStorage.setItem('TLOC_CUSTOM_PRICES', JSON.stringify(map)); renderPackages(); renderAdminPackages(); } async function exportDns() {
   const out = document.getElementById('exportResult');
   const username = state.lookedUpUser?.username || parseUsername(document.getElementById('lookupInput').value);
   if (!username) { out.innerHTML = '<span style="color:var(--err)">Vui lòng tra cứu username ở Bước 1 trước.</span>'; return; }
-  const packageId = state.selectedPkgId;
+  const pkg = state.packages.find(p => p.id === state.selectedPkgId) || state.packages[0] || {}; const packageId = pkg.id || state.selectedPkgId;
   const memberSinceDate = getMemberSinceDate();
   out.textContent = 'Đang kích hoạt DNS...';
   try {
     const res = await apiFetch('/api/v1/dns/export', {
       method: 'POST',
-      body: JSON.stringify({ username, packageId, memberSinceDate })
+      body: JSON.stringify({ username, packageId, durationDays: pkg.durationDays, memberSinceDate })
     });
     const rawUrl = res.installUrl || res.data?.installUrl || '/g/demo';
     const fullUrl = rawUrl.startsWith('http') ? rawUrl : (getBaseUrl() + rawUrl);
