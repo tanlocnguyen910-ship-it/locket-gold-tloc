@@ -5,480 +5,677 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Locket Gold TLoc 💛</title>
   <style>
-    :root {
-      --bg: #FFFDF5;
-      --card: #FFFFFF;
-      --cream: #FEF6D8;
-      --gold: #F59E0B;
-      --gold-dark: #D97706;
-      --text: #292524;
-      --muted: #78716C;
-      --border: #FDE68A;
-      --ok: #16A34A;
-      --err: #DC2626;
-    }
-    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { margin: 0; background: linear-gradient(180deg, #FEF9E7 0%, var(--bg) 100%); color: var(--text); min-height: 100vh; }
-    .container { max-width: 760px; margin: 0 auto; padding: 16px; }
-    header { background: linear-gradient(135deg, #FBBF24, #F59E0B); color: #fff; border-radius: 18px; padding: 20px; box-shadow: 0 8px 24px rgba(245,158,11,0.22); margin-bottom: 16px; }
-    header h1 { margin: 0 0 6px; font-size: 1.5rem; }
-    header p { margin: 0; opacity: 0.95; font-size: 0.92rem; }
-    .tabs { display: flex; gap: 8px; margin-bottom: 16px; }
-    .tab-btn { flex: 1; padding: 12px; border: 2px solid var(--border); background: #fff; border-radius: 12px; font-weight: 700; cursor: pointer; color: var(--muted); }
-    .tab-btn.active { background: var(--gold); color: #fff; border-color: var(--gold); }
-    .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
-    .card h2 { margin: 0 0 12px; font-size: 1.08rem; color: var(--gold-dark); display: flex; align-items: center; gap: 8px; }
-    .row { display: flex; gap: 8px; flex-wrap: wrap; }
-    input, select { width: 100%; padding: 11px 12px; border: 1.5px solid #E7E5E4; border-radius: 10px; font-size: 0.95rem; background: #fff; }
-    input:focus, select:focus { outline: none; border-color: var(--gold); }
-    .btn { padding: 11px 16px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 0.92rem; transition: 0.15s; }
-    .btn-gold { background: var(--gold); color: #fff; }
-    .btn-gold:hover { background: var(--gold-dark); }
-    .btn-outline { background: var(--cream); color: var(--gold-dark); border: 1px solid var(--border); }
-    .btn-sm { padding: 7px 10px; font-size: 0.82rem; border-radius: 8px; }
-    .btn-ok { background: #DCFCE7; color: #166534; }
-    .btn-danger { background: #FEE2E2; color: #991B1B; }
-    .pkg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px; margin-bottom: 12px; }
-    .pkg { border: 2px solid #F3F4F6; border-radius: 12px; padding: 12px; cursor: pointer; background: #FFFBEB; transition: 0.15s; }
-    .pkg.selected, .pkg.active { border-color: var(--gold); background: #FEF3C7; box-shadow: 0 0 0 2px rgba(245,158,11,0.2); }
-    .pkg-name { font-weight: 700; font-size: 0.95rem; }
-    .pkg-price { font-size: 1.1rem; font-weight: 800; color: var(--gold-dark); margin: 4px 0; }
-    .pkg-meta { font-size: 0.8rem; color: var(--muted); }
-    .profile-box { display: flex; align-items: center; gap: 12px; background: var(--cream); padding: 12px; border-radius: 12px; margin-top: 10px; }
-    .profile-box img { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; border: 2px solid var(--gold); }
-    .badge { display: inline-block; padding: 3px 8px; border-radius: 999px; font-size: 0.75rem; font-weight: 700; }
-    .badge-ACTIVE { background: #DCFCE7; color: #166534; }
-    .badge-REVOKED { background: #FEE2E2; color: #991B1B; }
-    .badge-EXPIRED { background: #F3F4F6; color: #4B5563; }
-    .badge-warn { background: #FEF3C7; color: #92400E; }
-    .pay-box { background: #FFFBEB; border: 1px dashed var(--gold); border-radius: 12px; padding: 14px; }
-    .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
-    .stat { background: var(--cream); padding: 12px; border-radius: 12px; text-align: center; }
-    .stat b { font-size: 1.3rem; color: var(--gold-dark); display: block; }
-    .table-wrap { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
-    th, td { text-align: left; padding: 8px; border-bottom: 1px solid #F3F4F6; }
-    .hidden { display: none; }
-    .muted { color: var(--muted); font-size: 0.85rem; }
-    .mt8 { margin-top: 8px; }
+    :root { --bg:#FFFDF5; --card:#FFFFFF; --cream:#FEF6D8; --gold:#F59E0B; --gold-dark:#D97706; --text:#292524; --muted:#78716C; --border:#FDE68A; --ok:#16A34A; --err:#DC2626; --warn:#CA8A04; }
+    * { box-sizing:border-box; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
+    body { margin:0; background:linear-gradient(180deg,#FEF9E7 0%,var(--bg) 100%); color:var(--text); min-height:100vh; }
+    .container { max-width:960px; margin:0 auto; padding:16px; }
+    header { background:linear-gradient(135deg,#FBBF24,#F59E0B); color:#fff; border-radius:18px; padding:20px; margin-bottom:16px; box-shadow:0 8px 24px rgba(245,158,11,.22); }
+    header h1 { margin:0 0 6px; font-size:1.45rem; }
+    header p { margin:0; opacity:.95; font-size:.92rem; }
+    .tabs { display:flex; gap:8px; margin-bottom:16px; }
+    .tab-btn { flex:1; padding:11px; border:2px solid var(--border); background:#fff; border-radius:12px; font-weight:700; cursor:pointer; color:var(--text); }
+    .tab-btn.active { background:var(--gold); color:#fff; border-color:var(--gold); }
+    .card { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:16px; margin-bottom:14px; box-shadow:0 2px 10px rgba(0,0,0,.03); }
+    .card h2 { margin:0 0 12px; font-size:1.06rem; color:var(--gold-dark); display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap; }
+    .row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+    input, select { width:100%; padding:10px 12px; border:1.5px solid #E7E5E4; border-radius:10px; font-size:.94rem; background:#fff; }
+    input:focus, select:focus { outline:none; border-color:var(--gold); }
+    label { display:block; font-size:.83rem; font-weight:600; color:var(--muted); margin:8px 0 4px; }
+    .btn { padding:10px 15px; border:none; border-radius:10px; font-weight:700; cursor:pointer; font-size:.92rem; transition:.15s; }
+    .btn:disabled { opacity:.5; cursor:not-allowed; }
+    .btn-gold { background:var(--gold); color:#fff; }
+    .btn-gold:hover:not(:disabled) { background:var(--gold-dark); }
+    .btn-outline { background:#fff; border:1.5px solid var(--gold); color:var(--gold-dark); }
+    .btn-sm { padding:6px 10px; font-size:.8rem; border-radius:8px; }
+    .btn-ok { background:var(--ok); color:#fff; }
+    .btn-err { background:var(--err); color:#fff; }
+    .pkg-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:10px; margin-top:8px; }
+    .pkg { border:2px solid var(--border); border-radius:12px; padding:12px; cursor:pointer; background:#fff; transition:.15s; }
+    .pkg.active { border-color:var(--gold); background:var(--cream); box-shadow:0 0 0 2px rgba(245,158,11,.2); }
+    .pkg-meta { font-size:.78rem; color:var(--muted); line-height:1.45; margin-top:6px; }
+    .badge { display:inline-block; padding:2px 8px; border-radius:999px; font-size:.74rem; font-weight:700; margin:2px 4px 2px 0; }
+    .b-ok { background:#DCFCE7; color:#166534; }
+    .b-warn { background:#FEF9C3; color:#854D0E; }
+    .b-err { background:#FEE2E2; color:#991B1B; }
+    .b-info { background:#E0F2FE; color:#075985; }
+    .box-ok { background:#F0FDF4; border:1.5px solid #86EFAC; border-radius:12px; padding:12px; margin-top:10px; color:#14532D; }
+    .box-warn { background:#FEFCE8; border:1.5px solid #FDE047; border-radius:12px; padding:12px; margin-top:10px; color:#854D0E; }
+    .box-err { background:#FEF2F2; border:1.5px solid #FCA5A5; border-radius:12px; padding:12px; margin-top:10px; color:#991B1B; }
+    .profile { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+    .profile img { width:56px; height:56px; border-radius:50%; object-fit:cover; border:2px solid var(--gold); background:#eee; }
+    .stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(135px,1fr)); gap:8px; margin-top:10px; }
+    .stat { background:var(--cream); border:1px solid var(--border); border-radius:10px; padding:10px; text-align:center; }
+    .stat b { display:block; font-size:1.05rem; color:var(--gold-dark); }
+    .stat span { font-size:.78rem; color:var(--muted); }
+    .table-wrap { overflow-x:auto; margin-top:10px; }
+    table { width:100%; border-collapse:collapse; font-size:.81rem; }
+    th, td { padding:8px 6px; border-bottom:1px solid #F3F4F6; text-align:left; vertical-align:top; }
+    th { color:var(--muted); font-weight:700; white-space:nowrap; }
+    .mono { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.77rem; word-break:break-all; }
+    .hidden { display:none !important; }
+    .muted { color:var(--muted); font-size:.84rem; }
   </style>
 </head>
 <body>
 <div class="container">
   <header>
     <h1>Locket Gold TLoc 💛</h1>
-    <p>Nâng cấp Locket Gold chính chủ nhanh chóng · Tích hợp API CTV v1</p>
+    <p>Hệ thống kích hoạt & quản trị hồ sơ DNS Locket Gold chuẩn API_CTV</p>
   </header>
 
   <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('client', this)">Khách hàng</button>
-    <button class="tab-btn" onclick="switchTab('admin', this)">Quản trị CTV / Chủ Web</button>
+    <button class="tab-btn active" onclick="switchTab('activate', this)">🔥 Kích hoạt Gold</button>
+    <button class="tab-btn" onclick="switchTab('admin', this)">🛠️ Quản trị CTV & Hồ sơ</button>
   </div>
 
-  <!-- CLIENT FLOW -->
-  <div id="tab-client">
+  <div id="tab-activate">
     <div class="card">
-      <h2>Bước 1: Tra cứu tài khoản Locket</h2>
-      <div class="row">
-        <input id="lookupInput"  oninput="resetVerifiedLookup()"placeholder="Nhập username hoặc link Locket (vd: locket.cam/...)" style="flex:1" />
-        <button class="btn btn-gold" onclick="lookupUser()">Tra cứu</button>
-      </div>
-      <div id="lookupStatus" class="muted mt8"></div>
-      <div id="profileResult" class="hidden"></div>
+      <h2><span>1. Chọn gói dịch vụ (API_CTV)</span> <button class="btn btn-outline btn-sm" onclick="loadPackages()">🔄 Tải lại gói</button></h2>
+      <div id="pkgStatus" class="muted">Đang tải danh sách gói...</div>
+      <div id="pkgList" class="pkg-grid"></div>
     </div>
 
     <div class="card">
-      <h2>Bước 2: Chọn gói Locket Gold &amp; Tuỳ chọn</h2>
-      <div id="packageGrid" class="pkg-grid"></div>
-      <div class="row mt8">
+      <h2>2. Tra cứu tài khoản Locket</h2>
+      <div class="row">
+        <div style="flex:1; min-width:200px;">
+          <input id="usernameInput" placeholder="Nhập username Locket (vd: username123)" onkeydown="if(event.key==='Enter') lookupLocket()" />
+        </div>
+        <button id="btnLookup" class="btn btn-gold" onclick="lookupLocket()">🔍 Kiểm tra tài khoản</button>
+      </div>
+      <div id="lookupResult"></div>
+    </div>
+
+    <div class="card">
+      <h2>3. Tùy chọn & Kích hoạt hồ sơ DNS</h2>
+      <div class="row">
         <div style="flex:1; min-width:180px;">
-          <label class="muted">Ngày tham gia (memberSinceDate)</label>
-          <select id="memberSinceMode" onchange="toggleCustomDate()">
-            <option value="classic">Classic (03/05/2004)</option>
-            <option value="today">Hôm nay (Today)</option>
-            <option value="custom">Tuỳ chọn ngày (YYYY-MM-DD)</option>
+          <label for="videoMode">Chế độ Video (videoMode)</label>
+          <select id="videoMode">
+            <option value="5s">5s</option>
+            <option value="15s" selected>15s (Mặc định)</option>
+            <option value="30s">30s</option>
+            <option value="60s" disabled>60s (Đang bảo trì - đã khoá)</option>
           </select>
         </div>
-        <div id="customDateWrap" class="hidden" style="flex:1; min-width:160px;">
-          <label class="muted">Nhập ngày (YYYY-MM-DD)</label>
-          <input id="customDateInput" type="date" />
+        <div style="flex:1; min-width:180px;">
+          <label for="packageNameCustom">Tên gói hiển thị (packageName - tùy chọn)</label>
+          <input id="packageNameCustom" placeholder="Để trống dùng tên gói mặc định" />
         </div>
       </div>
-      <div class="row mt8">
-        <input id="couponInput" placeholder="Nhập mã giảm giá (nếu có)" style="flex:1" />
-        <button class="btn btn-outline" onclick="applyCoupon()">Áp dụng</button>
-      </div>
-      <div id="priceSummary" class="mt8" style="font-weight:700; color:var(--gold-dark);"></div>
-    </div>
-
-    <div class="card">
-      <h2>Bước 3: Thanh toán &amp; Hỗ trợ</h2>
-      <div class="pay-box">
-        <div><b>Chuyển khoản / MoMo:</b> <code>0948344850</code> — <b>Nguyễn Đức Tấn Lộc</b></div>
-        <div class="mt8"><b>Gói đã chọn:</b> <b id="payPkgName">Gói Dùng Thử</b></div><div class="mt8"><b>Số tiền cần thanh toán:</b> <b id="payAmount" style="color:var(--gold-dark); font-size:1.05rem;">0đ</b> <span id="payDiscountNote" class="muted"></span></div><div class="muted mt8">Nội dung CK: <b id="payNote">TLOC LOCKET</b></div>
-        <div class="row mt8">
-          <button class="btn btn-outline btn-sm" onclick="copyText('0948344850')">Copy SĐT/STK</button>
-          <button class="btn btn-gold btn-sm" onclick="openZalo()">Liên hệ Zalo 0948344850</button>
+      <div class="row">
+        <div style="flex:1; min-width:180px;">
+          <label for="memberSinceMode">Ngày tham gia (memberSinceDate)</label>
+          <select id="memberSinceMode" onchange="toggleCustomDate()">
+            <option value="classic">classic (03/05/2004)</option>
+            <option value="today">today (Hôm nay theo giờ VN)</option>
+            <option value="custom">Chọn ngày tùy chỉnh (YYYY-MM-DD)</option>
+          </select>
+        </div>
+        <div id="customDateWrap" class="hidden" style="flex:1; min-width:180px;">
+          <label for="memberSinceCustom">Chọn ngày (YYYY-MM-DD)</label>
+          <input id="memberSinceCustom" type="date" />
         </div>
       </div>
-    </div>
-
-    <div class="card">
-      <h2>Bước 4: Kích hoạt &amp; Nhận link cài đặt DNS</h2>
-      <button class="btn btn-gold" style="width:100%" onclick="exportDns()">Kích hoạt Locket Gold ngay</button>
-      <div id="exportResult" class="mt8"></div>
+      <div id="creditCheckMsg"></div>
+      <div style="margin-top:12px;">
+        <button id="btnExport" class="btn btn-gold" style="width:100%;" onclick="exportDns()" disabled>⚡ Kích hoạt / Xuất hồ sơ DNS</button>
+      </div>
+      <div id="exportResult"></div>
     </div>
   </div>
 
-  <!-- ADMIN FLOW -->
   <div id="tab-admin" class="hidden">
     <div class="card">
-      <h2>Cấu hình API CTV v1 (Lưu trình duyệt)</h2>
-      <label class="muted">Base URL</label>
-      <input id="cfgBaseUrl" placeholder="uplocket.io.vn" />
-      <label class="muted mt8" style="display:block;">LOCKET_API_KEY (Bearer ctv_...)</label>
-      <input id="cfgApiKey" type="password" placeholder="Nhập ctv_..." />
-      <div class="row mt8">
-        <button class="btn btn-gold" onclick="saveConfig()">Lưu cấu hình &amp; Tải dữ liệu</button>
-        <button class="btn btn-outline" onclick="clearConfig()">Xoá Key</button>
-      </div>
-      <div id="cfgStatus" class="muted mt8"></div>
-    </div>
-
-    <div class="card">
-      <h2>Số dư &amp; Lượt kích hoạt (GET /api/v1/credits)</h2>
-      <div class="stat-grid">
-        <div class="stat"><span class="muted">Số lượt còn lại (Credits)</span><b id="statCredits">2 lượt còn lại</b></div>
-        <div class="stat"><span class="muted">Số dư hoa hồng (Balance)</span><b id="statBalance">--</b></div>
-      </div>
-      <div class="muted mt8" id="ctvDefaultInfo">Đại Lý Bạc: <b>loc</b> — 2 lượt còn lại, 3 khách đang dùng</div><button class="btn btn-outline btn-sm mt8" onclick="loadCredits()">Làm mới số dư</button>
-    </div>
-
-    <div class="card">
-      <h2>Danh sách hồ sơ DNS (GET /api/v1/dns/activations?limit=50)</h2>
-      <button class="btn btn-outline btn-sm" onclick="loadActivations()">Tải danh sách</button>
-      <div class="table-wrap mt8">
-        <table>
-          <thead>
-            <tr>
-              <th>Mã KH</th><th>Username</th><th>Gói</th><th>Trạng thái</th><th>Hạn dùng</th><th>Link cài</th><th>Thao tác</th>
-            </tr>
-          </thead>
-          <tbody id="activationsBody"><tr><td colspan="7" class="muted">Chưa tải dữ liệu.</td></tr></tbody>
-        </table>
-      </div>
-    </div>
-
-    <div class="card">
-      <h2>Quản lý giá bán lẻ gói (đối chiếu minRetailPrice)</h2>
-      <div class="row mt8" style="gap:8px;flex-wrap:wrap;"><button class="btn btn-outline btn-sm" onclick="applyPricePreset('uplocket')">Bảng giá Chuẩn UpLocket (0đ / 20k / 30k / 49k / 99k / 149k)</button><button class="btn btn-outline btn-sm" onclick="applyPricePreset('tloc')">Bảng giá Lẻ TLoc (0đ / 20k / 50k / 89k / 119k)</button></div><div id="adminPkgList"></div>
-    </div>
-
-    <div class="card">
-      <h2>Tạo mã giảm giá (%)</h2>
+      <h2>Cấu hình API & Xác thực (Mục 2)</h2>
       <div class="row">
-        <input id="newCouponCode" placeholder="Mã (vd: TLOC20)" style="flex:1" />
-        <input id="newCouponPct" type="number" min="1" max="100" placeholder="% giảm" style="width:110px" />
-        <button class="btn btn-gold" onclick="createCoupon()">Tạo mã</button>
+        <div style="flex:1; min-width:220px;">
+          <label for="baseUrlInput">Base URL máy chủ</label>
+          <input id="baseUrlInput" placeholder="https://locketgold.vn" />
+        </div>
+        <div style="flex:1; min-width:220px;">
+          <label for="apiKeyInput">API Key CTV</label>
+          <input id="apiKeyInput" type="password" placeholder="Nhập API Key CTV..." />
+        </div>
       </div>
-      <div id="couponList" class="mt8"></div>
+      <p class="muted" style="margin:8px 0;">Hỗ trợ đồng thời 3 phương thức: Header <code>Authorization: Bearer</code>, Header <code>X-API-KEY</code> và tham số <code>?api_key=</code> trên các lệnh GET.</p>
+      <div class="row">
+        <button class="btn btn-gold" onclick="saveConfig()">💾 Lưu cấu hình & Tải dữ liệu</button>
+        <button class="btn btn-outline" onclick="toggleApiKeyVis()">👁️ Hiện/Ẩn Key</button>
+      </div>
+      <div id="configMsg"></div>
+    </div>
+
+    <div class="card">
+      <h2><span>Số dư & Thống kê CTV</span> <button class="btn btn-outline btn-sm" onclick="loadCredits()">🔄 Cập nhật số dư</button></h2>
+      <div id="creditsResult" class="muted">Nhập API Key và bấm cập nhật để xem số dư.</div>
+    </div>
+
+    <div class="card">
+      <h2><span>Danh sách hồ sơ DNS đã kích hoạt</span> <button class="btn btn-outline btn-sm" onclick="loadActivations()">📋 Tải danh sách</button></h2>
+      <div class="row">
+        <div style="width:140px;">
+          <label for="limitInput">Số lượng (1 - 100)</label>
+          <input id="limitInput" type="number" min="1" max="100" value="20" />
+        </div>
+        <div style="flex:1; min-width:220px;">
+          <label for="renewPkgSelect">Gói khi bấm Gia hạn (tùy chọn)</label>
+          <select id="renewPkgSelect">
+            <option value="">-- Mặc định gia hạn theo gói đang gắn trên hồ sơ --</option>
+          </select>
+        </div>
+      </div>
+      <div id="actionFeedback"></div>
+      <div id="activationsResult" class="table-wrap muted" style="margin-top:10px;">Chưa tải danh sách hồ sơ.</div>
     </div>
   </div>
 </div>
-
 <script>
-let verifiedProfile = null; const DEFAULT_BASE = 'https:/' + '/uplocket.io.vn';
-const DEFAULT_PACKAGES = [
-{ id: 'pkg_trial_3d', code: 'TRIAL_3D', name: 'Gói dùng thử (Trial)', price: 0, originalPrice: 79000, minRetailPrice: 0, durationDays: 3, duration: '3 ngày', isTrial: true, lifetime: false, creditCost: 0, videoMode: '30s', aiQuota: 0, badge: 'Trial' },
-  { id: 'pkg_gold_1y', code: 'GOLD_1Y', name: 'Locket Gold 1 Năm', price: 20000, originalPrice: 399000, minRetailPrice: 20000, durationDays: 365, duration: '365 ngày', isTrial: false, lifetime: false, creditCost: 2, videoMode: '30s', aiQuota: 1, badge: 'Ưu đãi lớn' },
-  { id: 'pkg_gold_lifetime', code: 'GOLD_LIFETIME', name: 'Locket Gold Vĩnh Viễn', price: 30000, originalPrice: 599000, minRetailPrice: 30000, durationDays: 9999, duration: 'Trọn đời', isTrial: false, lifetime: true, creditCost: 3, videoMode: '30s', aiQuota: 1, badge: 'VIP Trọn Đời' },
-  { id: 'pkg_ctv_1m', code: 'CTV_1M', name: 'Gói CTV 1 Tháng', price: 49000, originalPrice: 79000, minRetailPrice: 45000, durationDays: 30, duration: '30 ngày', isTrial: false, lifetime: false, creditCost: 1, videoMode: '30s', aiQuota: 1, badge: 'Phổ biến' },
-  { id: 'pkg_ctv_3m', code: 'CTV_3M', name: 'Gói CTV 3 Tháng', price: 99000, originalPrice: 199000, minRetailPrice: 89000, durationDays: 90, duration: '90 ngày', isTrial: false, lifetime: false, creditCost: 2, videoMode: '30s', aiQuota: 1, badge: 'Bán chạy' },
-  { id: 'pkg_ctv_6m', code: 'CTV_6M', name: 'Gói CTV 6 Tháng', price: 149000, originalPrice: 299000, minRetailPrice: 129000, durationDays: 180, duration: '180 ngày', isTrial: false, lifetime: false, creditCost: 2, videoMode: '30s', aiQuota: 1, badge: 'Tiết kiệm' }
-];
-
+const DEFAULT_BASE = 'https://locketgold.vn';
 let state = {
-  packages: [...DEFAULT_PACKAGES],
-  selectedPkgId: 'pkg_gold_1y',
-  lookedUpUser: null,
-  appliedCoupon: null
+  packages: [],
+  selectedPkg: null,
+  creditsInfo: null,
+  lookupOk: false,
+  lookupUsername: '',
+  activations: []
 };
 
-function getBaseUrl() {
-  return (localStorage.getItem('TLOC_BASE_URL') || DEFAULT_BASE).replace(/\/+$/, '');
-}
-function getApiKey() {
-  return localStorage.getItem('LOCKET_API_KEY') || '';
-}
-function getCustomPrices() {
-  try { return JSON.parse(localStorage.getItem('TLOC_CUSTOM_PRICES') || '{}'); } catch { return {}; }
-}
-function getCoupons() {
-  try { return JSON.parse(localStorage.getItem('TLOC_COUPONS') || '{"TLOC10":10}'); } catch { return { TLOC10: 10 }; }
-}
-function fmtMoney(n) {
-  return Number(n || 0).toLocaleString('vi-VN') + 'đ';
-}
-function switchTab(tab, btn) {
-  document.getElementById('tab-client').classList.toggle('hidden', tab !== 'client');
-  document.getElementById('tab-admin').classList.toggle('hidden', tab !== 'admin');
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const getBaseUrl = () => ($('baseUrlInput')?.value.trim() || localStorage.getItem('locket_base_url') || DEFAULT_BASE).replace(/\/+$/, '');
+const getApiKey = () => ($('apiKeyInput')?.value.trim() || localStorage.getItem('locket_api_key') || '').trim();
+
+function switchTab(name, btn) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-}
-function copyText(t) {
-  navigator.clipboard?.writeText(t);
-  alert('Đã sao chép: ' + t);
-}
-function openZalo() {
-  window.open('https:/' + '/zalo.me/0948344850', '_blank');
+  $('tab-activate').classList.toggle('hidden', name !== 'activate');
+  $('tab-admin').classList.toggle('hidden', name !== 'admin');
 }
 
-async function smartFetch(targetUrl, options = {}) { try { return await fetch(targetUrl, options); } catch (err) { const method = (options.method || 'GET').toUpperCase(); const proxy1 = 'https://' + 'corsproxy' + '.io/?' + encodeURIComponent(targetUrl); try { const r1 = await fetch(proxy1, options); if ((r1.status < 500 && r1.status !== 403 && r1.status !== 429) || method !== 'GET') return r1; } catch (err1) { if (method !== 'GET') throw err1; } const proxy2 = 'https://api.' + 'allorigins' + '.win/raw?url=' + encodeURIComponent(targetUrl); return await fetch(proxy2, { method: 'GET' }); } }
-  async function apiFetch(path, options = {}) {
-  const key = getApiKey();
-  const headers = Object.assign({ 'Content-Type': 'application/json' }, options.headers || {});
-  if (key) headers['Authorization'] = 'Bearer ' + key;
-  const res = await smartFetch(getBaseUrl() + path, Object.assign({}, options, { headers }));
-  if (!res.ok) throw new Error('HTTP ' + res.status);
-  return await res.json();
-}
-
-function parseUsername(raw) {
-  const s = (raw || '').trim();
-  if (!s) return '';
-  if (s.includes('locket.cam/')) return s.split('locket.cam/').pop().split(/[?#]/)[0].replace(/^@/, '');
-  return s.replace(/^@/, '');
-}
-
-function resetVerifiedLookup() { verifiedProfile = null; state.lookedUpUser = null; const box = document.getElementById('profileResult'); box.className = 'hidden'; box.innerHTML = ''; document.getElementById('lookupStatus').textContent = ''; }
-  
-async function lookupUser() { const raw = document.getElementById('lookupInput').value; const u = parseUsername(raw); const status = document.getElementById('lookupStatus'); const box = document.getElementById('profileResult'); verifiedProfile = null; state.lookedUpUser = null; if (!u) { status.textContent = 'Vui lòng nhập username hợp lệ.'; box.className = 'hidden'; box.innerHTML = ''; return; } status.textContent = 'Đang tra cứu tài khoản Locket thật...'; box.className = 'hidden'; box.innerHTML = ''; const baseUrl = getBaseUrl(); const apiKey = getApiKey(); let data = null; let notFound = false; let apiError = null; try { const res = await smartFetch(baseUrl + '/api/locket/lookup', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username: u }) }); const json = await res.json().catch(() => null); if (res.status === 404 || (json && (json.exists === false || json.success === false))) { notFound = true; data = json; } else if (res.ok && json) { data = json.data || json; } else { apiError = 'HTTP ' + res.status; } } catch (e) { apiError = e.message || 'Lỗi kết nối'; } if (!notFound && (!data || !data.uid) && apiKey) { try { const res2 = await smartFetch(baseUrl + '/api/v1/dns/lookup?username=' + encodeURIComponent(u), + '&api_key=' + encodeURIComponent(apiKey) { headers: { 'Authorization': 'Bearer ' + apiKey } }); const json2 = await res2.json().catch(() => null); if (res2.status === 404 || (json2 && (json2.exists === false || json2.success === false))) { notFound = true; data = json2; } else if (res2.ok && json2) { data = json2.data || json2; apiError = null; } else if (!apiError) { apiError = 'HTTP ' + res2.status; } } catch (e2) { if (!apiError) apiError = e2.message || 'Lỗi kết nối'; } } if (notFound || (data && (data.exists === false || data.success === false))) { status.textContent = ''; box.className = 'profile-box'; box.style.borderColor = '#DC2626'; box.style.background = '#FEF2F2'; box.innerHTML = '<div style="color:#DC2626;font-weight:600">❌ Tài khoản @' + u + ' không tồn tại trên Locket! Vui lòng kiểm tra lại chính xác username.</div>'; return; } if (data && (data.provisional === true || (data.uid && String(data.uid).startsWith('usr_')))) { status.textContent = ''; box.className = 'profile-box'; box.style.borderColor = '#D97706'; box.style.background = '#FFFBEB'; box.innerHTML = '<div style="color:#B45309;font-weight:600">⚠️ Chưa xác thực được với Locket (đang giới hạn tần suất). Vui lòng thử lại sau ít phút!</div>'; return; } if (!data || data.exists !== true || !data.uid) { status.textContent = ''; box.className = 'profile-box'; box.style.borderColor = '#DC2626'; box.style.background = '#FEF2F2'; box.innerHTML = '<div style="color:#DC2626;font-weight:600">❌ Không thể xác thực tài khoản (' + (apiError || 'lỗi kết nối mạng/CORS') + '). Vui lòng kiểm tra kết nối hoặc cấu hình API Key trong tab Quản trị.</div>'; return; } const rawAvatar = data.avatar || ''; const avatarUrl = rawAvatar.startsWith('/') ? baseUrl + rawAvatar : (rawAvatar || (baseUrl + '/api/locket/avatar/' + encodeURIComponent(u))); const profile = { username: data.username || u, name: data.name || u, uid: data.uid, avatar: avatarUrl, hasGold: !!(data.hasGold || data.isGold), exists: true }; verifiedProfile = profile; state.lookedUpUser = profile; status.textContent = ''; renderProfile(profile); }
-function renderProfile(p) { state.lookedUpUser = p; document.getElementById('payNote').textContent = 'TLOC ' + p.username; const box = document.getElementById('profileResult'); box.className = 'profile-box'; box.style.borderColor = '#16A34A'; box.style.background = '#F0FDF4'; const fallbackImg = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(p.name || p.username) + '&background=16A34A&color=ffffff'; box.innerHTML = '<img src="' + p.avatar + '" alt="' + p.username + '" style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid #16A34A" onerror="this.onerror=null;this.src=\'' + fallbackImg + '\'" /><div><div style="font-weight:700;font-size:15px">' + p.name + ' <span class="badge ' + (p.hasGold ? 'badge-warn' : 'badge-ACTIVE') + '">' + (p.hasGold ? 'Đang dùng Gold' : 'Chưa có Gold') + '</span> <span class="badge badge-ACTIVE">Có thể nâng cấp</span></div><div class="muted" style="font-size:13px">@' + p.username + ' • UID: <code>' + p.uid + '</code></div></div>'; }
-  
-async function loadPackages() { if (!state.packages || !state.packages.length) state.packages = [...DEFAULT_PACKAGES]; renderPackages(); renderAdminPackages(); if (!getApiKey()) return;
-  try {
-    const res = await apiFetch('/api/v1/packages');
-    const list = res.packages || res.data || res;
-    if (Array.isArray(list) && list.length) {
-      state.packages = list.map(p => ({
-        id: p.id || p.packageId,
-        name: p.name || p.packageName,
-        duration: p.duration || '',
-        price: Number(p.retailPrice ?? p.price ?? 0),
-        minRetailPrice: Number(p.minRetailPrice ?? 0), durationDays: p.durationDays ?? (DEFAULT_PACKAGES.find(d => d.id === (p.id || p.packageId) || d.code === p.code || d.name === (p.name || p.packageName)) || {}).durationDays, originalPrice: p.originalPrice ?? (DEFAULT_PACKAGES.find(d => d.durationDays === p.durationDays || d.id === (p.id || p.packageId)) || {}).originalPrice, videoMode: p.videoMode || '30s', aiQuota: p.aiQuota ?? (DEFAULT_PACKAGES.find(d => d.durationDays === p.durationDays || d.id === (p.id || p.packageId)) || {}).aiQuota ?? 1, badge: p.badge || (DEFAULT_PACKAGES.find(d => d.durationDays === p.durationDays || d.id === (p.id || p.packageId)) || {}).badge || ''
-      }));
-      state.selectedPkgId = state.packages[0].id;
-    }
-  } catch {}
-  renderPackages();
-  renderAdminPackages();
-}
-
-function getEffectivePrice(pkg) {
-  const custom = getCustomPrices();
-  return custom[pkg.id] !== undefined ? Number(custom[pkg.id]) : Number(pkg.price);
-}
-
-function renderPackages() {
-  const grid = document.getElementById('packageGrid');
-  grid.innerHTML = state.packages.map(pkg => {
-    const price = getEffectivePrice(pkg);
-    const sel = pkg.id === state.selectedPkgId ? 'selected active' : ''; const metaParts = [pkg.duration, pkg.isTrial ? 'Dùng thử' : '', pkg.videoMode ? 'Video ' + pkg.videoMode : '', pkg.creditCost !== undefined ? pkg.creditCost + ' credit' : ''].filter(Boolean).join(' • ');
-    return `<div class="pkg ${sel}" onclick="selectPackage('${pkg.id}')">
-      <div class="pkg-name">${pkg.name} ${pkg.badge ? `<span class="badge badge-ACTIVE" style="font-size:10px;margin-left:4px">${pkg.badge}</span>` : ''}</div>
-      <div class="pkg-price">${price === 0 ? 'Miễn phí' : fmtMoney(price)}${pkg.originalPrice ? ` <span class="muted" style="text-decoration:line-through;font-size:12px;font-weight:400">${fmtMoney(pkg.originalPrice)}</span>` : ''}</div>
-      <div class="pkg-meta">${pkg.duration || 'Gói Locket Gold'} • Video ${pkg.videoMode || '30s'} • ${pkg.aiQuota ?? 0} AI/ngày</div>
-    </div>`;
-  }).join('');
-  updatePriceSummary();
-}
-
-function selectPackage(id) {
-  state.selectedPkgId = id;
-  renderPackages();
+function toggleApiKeyVis() {
+  const el = $('apiKeyInput');
+  el.type = el.type === 'password' ? 'text' : 'password';
 }
 
 function toggleCustomDate() {
-  const mode = document.getElementById('memberSinceMode').value;
-  document.getElementById('customDateWrap').classList.toggle('hidden', mode !== 'custom');
+  $('customDateWrap').classList.toggle('hidden', $('memberSinceMode').value !== 'custom');
 }
 
-function getMemberSinceDate() {
-  const mode = document.getElementById('memberSinceMode').value;
-  if (mode === 'classic') return '2004-05-03';
-  if (mode === 'today') return new Date().toISOString().slice(0, 10);
-  return document.getElementById('customDateInput').value || '2004-05-03';
+function getMemberSinceValue() {
+  const mode = $('memberSinceMode').value;
+  if (mode === 'classic') return '03/05/2004';
+  if (mode === 'today') {
+    return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Ho_Chi_Minh' }).format(new Date());
+  }
+  return $('memberSinceCustom').value || '03/05/2004';
 }
 
-function applyCoupon() {
-  const code = document.getElementById('couponInput').value.trim().toUpperCase();
-  const coupons = getCoupons();
-  if (!code || !coupons[code]) {
-    state.appliedCoupon = null;
-    alert('Mã giảm giá không hợp lệ.');
+function buildApiUrl(path, method) {
+  const base = getBaseUrl();
+  const full = path.startsWith('http') ? path : `${base}${path.startsWith('/') ? '' : '/'}${path}`;
+  const key = getApiKey();
+  if (key && method === 'GET') {
+    const sep = full.includes('?') ? '&' : '?';
+    return `${full}${sep}api_key=${encodeURIComponent(key)}`;
+  }
+  return full;
+}
+
+function formatApiError(res, data) {
+  const msg = data?.error || data?.message || '';
+  switch (res.status) {
+    case 400: return `Dữ liệu gửi lên sai (400): ${esc(msg || 'Vui lòng kiểm tra lại thông tin.')}`;
+    case 401: return `Thiếu hoặc sai khóa xác thực (401). Vui lòng kiểm tra lại API Key trong mục Quản trị.`;
+    case 402: return `Số dư credit không đủ. Vui lòng nạp thêm! (402) — Nạp lượt tại <a href="${esc(getBaseUrl())}/ctv/credits" target="_blank">${esc(getBaseUrl())}/ctv/credits</a>`;
+    case 403: return `Tài khoản CTV đã bị admin khoá (403). ${esc(msg)}`;
+    case 404: return `Không tìm thấy nick Locket hoặc hồ sơ (404). ${esc(msg)}`;
+    case 409: return `Xung đột (409): ${esc(msg || 'Nick đang thuộc CTV khác, hồ sơ đang trọn đời, gói 0 lượt/dùng thử không áp dụng được, hoặc đang có yêu cầu khác cho cùng nick.')}`;
+    case 429: {
+      const wait = data?.retryAfter || res.headers.get('Retry-After') || 'vài';
+      return `Gọi quá nhanh (429). Vui lòng đợi <b>${esc(wait)} giây</b> trước khi thử lại.`;
+    }
+    case 502: return `Lỗi Edge (502): ${esc(msg || 'Kết nối máy chủ biên thất bại.')} — <b>Lượt đã được hoàn tự động</b>, an toàn để thử lại sau ít phút.`;
+    case 500: return `Lỗi hệ thống (500): ${esc(msg || 'Vui lòng thử lại sau ít phút.')}`;
+    default: return `Lỗi (${res.status}): ${esc(msg || res.statusText)}`;
+  }
+}
+
+async function apiFetch(path, options = {}) {
+  const method = (options.method || 'GET').toUpperCase();
+  const key = getApiKey();
+  const url = buildApiUrl(path, method);
+  const headers = { ...(options.headers || {}) };
+  if (options.body && !headers['Content-Type']) headers['Content-Type'] = 'application/json';
+  if (key && !options.skipAuth) {
+    headers['Authorization'] = `Bearer ${key}`;
+    headers['X-API-KEY'] = key;
+  }
+  const res = await fetch(url, { ...options, method, headers });
+  const data = await res.json().catch(() => ({}));
+  return { res, data };
+}
+
+function updateCreditCheckUI() {
+  const box = $('creditCheckMsg');
+  const pkg = state.selectedPkg;
+  if (!pkg || !state.creditsInfo) { box.innerHTML = ''; return; }
+  const cost = Number(pkg.creditCost ?? 0);
+  const cur = Number(state.creditsInfo.credits ?? 0);
+  if (cur < cost) {
+    box.innerHTML = `<div class="box-err">Số dư credit không đủ (${cur} &lt; ${cost} lượt). Vui lòng nạp thêm tại <a href="${esc(getBaseUrl())}/ctv/credits" target="_blank">/ctv/credits</a>!</div>`;
   } else {
-    state.appliedCoupon = { code, pct: Number(coupons[code]) };
+    box.innerHTML = `<div class="box-ok" style="padding:8px 12px;">Số dư hiện tại: <b>${cur}</b> lượt | Gói chọn trừ: <b>${cost}</b> lượt (Đủ điều kiện).</div>`;
   }
-  updatePriceSummary();
 }
 
-function updatePriceSummary() {
-  const pkg = state.packages.find(p => p.id === state.selectedPkgId) || state.packages[0];
-  let price = getEffectivePrice(pkg);
-  let text = `Gói đã chọn: ${pkg.name} — Giá: ${fmtMoney(price)}`;
-  if (state.appliedCoupon) {
-    const finalPrice = Math.max(0, Math.round(price * (100 - state.appliedCoupon.pct) / 100));
-    text += ` → Giảm ${state.appliedCoupon.pct}% (${state.appliedCoupon.code}): ${fmtMoney(finalPrice)}`;
-  }
-  document.getElementById('priceSummary').textContent = text; const finalPrice = state.appliedCoupon ? Math.max(0, Math.round(price * (100 - state.appliedCoupon.pct) / 100)) : price; const payPkgEl = document.getElementById('payPkgName'); if (payPkgEl) payPkgEl.textContent = pkg.name; const payAmtEl = document.getElementById('payAmount'); if (payAmtEl) payAmtEl.textContent = fmtMoney(finalPrice); const payDiscEl = document.getElementById('payDiscountNote'); if (payDiscEl) payDiscEl.textContent = state.appliedCoupon ? '(Đã giảm ' + state.appliedCoupon.pct + '% - ' + state.appliedCoupon.code + ')' : '';
-}
-
-function applyPricePreset(mode) { const presets = { uplocket: { pkg_trial_3d: 0, pkg_gold_1y: 20000, pkg_gold_lifetime: 30000, pkg_ctv_1m: 49000, pkg_ctv_3m: 99000, pkg_ctv_6m: 149000 }, tloc: { pkg_trial_3d: 0, pkg_gold_1y: 20000, pkg_gold_lifetime: 50000, pkg_ctv_1m: 50000, pkg_ctv_3m: 89000, pkg_ctv_6m: 119000 } }; const map = presets[mode]; if (!map) return; localStorage.setItem('TLOC_CUSTOM_PRICES', JSON.stringify(map)); renderPackages(); renderAdminPackages(); } async function exportDns() {
-  const out = document.getElementById('exportResult');
-const u = parseUsername(document.getElementById('lookupInput').value); if (!u || !verifiedProfile || verifiedProfile.username !== u) { out.innerHTML = '<span style="color:var(--err)">❌ Vui lòng bấm <b>Tra cứu</b> và xác thực đúng tài khoản Locket tồn tại ở Bước 1 trước khi kích hoạt!</span>'; return; } const username = verifiedProfile.username;
-  const pkg = state.packages.find(p => p.id === state.selectedPkgId) || state.packages[0] || {}; const packageId = pkg.id || state.selectedPkgId;
-  const memberSinceDate = getMemberSinceDate();
-  out.textContent = 'Đang kích hoạt DNS...';
+async function loadPackages() {
+  $('pkgStatus').textContent = 'Đang tải danh sách gói...';
   try {
-    const res = await apiFetch('/api/v1/dns/export', {
-      method: 'POST',
-      body: JSON.stringify({ username, packageId, durationDays: pkg.durationDays, memberSinceDate })
-    });
-    const rawUrl = res.installUrl || res.data?.installUrl || '/g/demo';
-    const fullUrl = rawUrl.startsWith('http') ? rawUrl : (getBaseUrl() + rawUrl);
-    renderInstallLink(fullUrl, false);
-  } catch {
-    const demoUrl = getBaseUrl() + '/g/tloc-' + username.slice(0, 6);
-    renderInstallLink(demoUrl, true);
+    const { res, data } = await apiFetch('/api/v1/packages');
+    if (!res.ok) {
+      $('pkgStatus').innerHTML = `<div class="box-err">${formatApiError(res, data)}</div>`;
+      return;
+    }
+    const list = Array.isArray(data) ? data : (data.packages || data.data || []);
+    state.packages = list;
+    $('pkgStatus').textContent = list.length ? `Đã tải ${list.length} gói dịch vụ:` : 'Không có gói nào.';
+    renderPackages();
+    renderRenewOptions();
+  } catch (e) {
+    $('pkgStatus').innerHTML = `<div class="box-err">Lỗi kết nối khi tải gói: ${esc(e.message)}</div>`;
   }
 }
 
-function renderInstallLink(url, isDemo) {
-  document.getElementById('exportResult').innerHTML = `
-    <div class="pay-box">
-      <div><b>Link cài đặt DNS ${isDemo ? '(Mô phỏng)' : ''}:</b></div>
-      <div class="mt8"><a href="${url}" target="_blank">${url}</a></div>
-      <div class="row mt8">
-        <a class="btn btn-gold btn-sm" href="${url}" target="_blank" style="text-decoration:none;">Mở bằng Safari trên iPhone</a>
-        <button class="btn btn-outline btn-sm" onclick="copyText('${url}')">Copy link</button>
+function renderPackages() {
+  const wrap = $('pkgList');
+  wrap.innerHTML = '';
+  state.packages.forEach((p, idx) => {
+    const pkgId = p.packageId || p.id || '';
+    const days = Number(p.durationDays ?? 0);
+    const isLifetime = Boolean(p.lifetime) || days >= 3650 || days === 9999;
+    const div = document.createElement('div');
+    div.className = 'pkg' + ((state.selectedPkg && (state.selectedPkg.packageId || state.selectedPkg.id) === pkgId) || (!state.selectedPkg && idx === 0) ? ' active' : '');
+    if (!state.selectedPkg && idx === 0) state.selectedPkg = p;
+    div.onclick = () => {
+      state.selectedPkg = p;
+      renderPackages();
+      updateCreditCheckUI();
+    };
+    div.innerHTML = `
+      <div style="font-weight:800; color:var(--gold-dark);">${esc(p.name || p.adminName || pkgId)}</div>
+      <div>
+        ${p.isTrial ? '<span class="badge b-warn">Dùng thử (isTrial)</span>' : ''}
+        ${isLifetime ? '<span class="badge b-ok">Trọn đời (9999 ngày)</span>' : `<span class="badge b-info">${days} ngày</span>`}
+        <span class="badge b-info">${esc(p.creditCost ?? 0)} lượt</span>
       </div>
-    </div>
-  `;
+      <div class="pkg-meta">
+        <div>ID: <span class="mono">${esc(pkgId)}</span> | Code: <b>${esc(p.code || '-')}</b></div>
+        <div>AdminName: <b>${esc(p.adminName || '-')}</b></div>
+        <div>Giá CTV: <b>${Number(p.ctvPrice ?? 0).toLocaleString('vi-VN')}đ</b> | Bán lẻ tối thiểu: <b>${Number(p.minRetailPrice ?? 0).toLocaleString('vi-VN')}đ</b></div>
+        <div>Video: <b>${esc(p.videoMode || '15s')}</b> | AI Quota: <b>${esc(p.aiQuota ?? '-')}</b></div>
+      </div>
+    `;
+    wrap.appendChild(div);
+  });
+  updateCreditCheckUI();
 }
 
-function saveConfig() {
-  localStorage.setItem('TLOC_BASE_URL', document.getElementById('cfgBaseUrl').value.trim() || DEFAULT_BASE);
-  localStorage.setItem('LOCKET_API_KEY', document.getElementById('cfgApiKey').value.trim());
-  document.getElementById('cfgStatus').textContent = 'Đã lưu cấu hình vào localStorage.';
-  loadCredits();
-  loadActivations();
-  loadPackages();
-}
-
-function clearConfig() {
-  localStorage.removeItem('LOCKET_API_KEY');
-  document.getElementById('cfgApiKey').value = '';
-  document.getElementById('cfgStatus').textContent = 'Đã xoá LOCKET_API_KEY.';
+function renderRenewOptions() {
+  const sel = $('renewPkgSelect');
+  sel.innerHTML = '<option value="">-- Mặc định gia hạn theo gói đang gắn trên hồ sơ --</option>';
+  state.packages.forEach(p => {
+    const id = p.packageId || p.id || '';
+    const opt = document.createElement('option');
+    opt.value = id;
+    opt.textContent = `${p.name || id} (${p.creditCost ?? 0} lượt - ${p.durationDays >= 3650 ? 'Trọn đời' : p.durationDays + ' ngày'})`;
+    sel.appendChild(opt);
+  });
 }
 
 async function loadCredits() {
+  if (!getApiKey()) {
+    $('creditsResult').innerHTML = '<div class="box-warn">Chưa nhập API Key CTV.</div>';
+    return;
+  }
+  $('creditsResult').textContent = 'Đang tải số dư...';
   try {
-    const res = await apiFetch('/api/v1/credits');
-    const d = res.data || res;
-    document.getElementById('statCredits').textContent = d.credits ?? '--';
-    document.getElementById('statBalance').textContent = d.balance !== undefined ? fmtMoney(d.balance) : '--';
-  } catch {
-    document.getElementById('statCredits').textContent = 'N/A';
-    document.getElementById('statBalance').textContent = 'N/A';
+    const { res, data } = await apiFetch('/api/v1/credits');
+    if (!res.ok) {
+      $('creditsResult').innerHTML = `<div class="box-err">${formatApiError(res, data)}</div>`;
+      return;
+    }
+    const c = data.data || data;
+    state.creditsInfo = c;
+    $('creditsResult').innerHTML = `
+      <div class="stats">
+        <div class="stat"><b>${esc(c.credits ?? 0)}</b><span>Số lượt (credits)</span></div>
+        <div class="stat"><b>${Number(c.balance ?? 0).toLocaleString('vi-VN')}đ</b><span>Số dư hoa hồng (balance)</span></div>
+        <div class="stat"><b>${Number(c.totalEarned ?? 0).toLocaleString('vi-VN')}đ</b><span>Tổng thu nhập (totalEarned)</span></div>
+        <div class="stat"><b>${esc(c.totalSales ?? 0)}</b><span>Tổng đơn (totalSales)</span></div>
+        <div class="stat"><b class="mono">${esc(c.refCode || '-')}</b><span>Mã giới thiệu (refCode)</span></div>
+      </div>
+      <div class="muted" style="margin-top:8px;">Cần thêm lượt? Nạp tại <a href="${esc(getBaseUrl())}/ctv/credits" target="_blank">${esc(getBaseUrl())}/ctv/credits</a></div>
+    `;
+    updateCreditCheckUI();
+  } catch (e) {
+    $('creditsResult').innerHTML = `<div class="box-err">Lỗi kết nối: ${esc(e.message)}</div>`;
+  }
+}async function lookupLocket() {
+  const raw = $('usernameInput').value.trim().replace(/^@/, '');
+  if (!raw) {
+    $('lookupResult').innerHTML = '<div class="box-warn">Vui lòng nhập username Locket.</div>';
+    return;
+  }
+  state.lookupOk = false;
+  state.lookupUsername = raw;
+  $('btnExport').disabled = true;
+  $('lookupResult').innerHTML = '<div class="muted" style="margin-top:8px;">Đang tra cứu tài khoản Locket...</div>';
+
+  try {
+    let dnsRes = null, dnsData = {};
+    if (getApiKey()) {
+      const r = await apiFetch(`/api/v1/dns/lookup?username=${encodeURIComponent(raw)}`);
+      dnsRes = r.res; dnsData = r.data;
+    }
+
+    let pubRes = null, pubData = {};
+    try {
+      const r2 = await apiFetch('/api/locket/lookup', {
+        method: 'POST',
+        skipAuth: true,
+        body: JSON.stringify({ username: raw })
+      });
+      pubRes = r2.res; pubData = r2.data;
+    } catch (_) {}
+
+    if (dnsRes && !dnsRes.ok && dnsRes.status !== 404) {
+      $('lookupResult').innerHTML = `<div class="box-err">${formatApiError(dnsRes, dnsData)}</div>`;
+      return;
+    }
+    if (!dnsRes && pubRes && !pubRes.ok && pubRes.status !== 404) {
+      $('lookupResult').innerHTML = `<div class="box-err">${formatApiError(pubRes, pubData)}</div>`;
+      return;
+    }
+
+    const profile = dnsData?.profile || pubData?.profile || pubData?.data || pubData || {};
+    const exists = profile.exists !== undefined ? Boolean(profile.exists) : Boolean(profile.uid && !((dnsRes?.status === 404) || (pubRes?.status === 404)));
+    const uid = String(profile.uid || '').trim();
+    const provisional = Boolean(dnsData?.provisional ?? pubData?.provisional ?? uid.startsWith('usr_'));
+
+    if (!exists || !uid || (dnsRes?.status === 404 && !pubData?.uid)) {
+      $('lookupResult').innerHTML = '<div class="box-err">❌ Tài khoản không tồn tại trên Locket (uid rỗng). Kích hoạt sẽ bị từ chối (404).</div>';
+      $('btnExport').disabled = true;
+      return;
+    }
+
+    if (provisional || uid.startsWith('usr_')) {
+      $('lookupResult').innerHTML = '<div class="box-warn">⚠️ Chưa xác thực được với Locket (Locket đang giới hạn tần suất hoặc quá thời gian chờ, UID tạm). Nên thử lại sau ít phút!</div>';
+      $('btnExport').disabled = true;
+      return;
+    }
+
+    let avatar = String(profile.avatar || pubData?.avatar || '');
+    if (avatar.startsWith('/')) avatar = `${getBaseUrl()}${avatar}`;
+    const displayName = profile.name || pubData?.name || raw;
+    const uname = profile.username || raw;
+
+    const isGold = pubData?.is_gold;
+    const isActiveSys = pubData?.is_active_in_system;
+    const isLockedSys = pubData?.is_locked_in_system;
+    const existCode = pubData?.existing_activation_code;
+    const canAdd = pubData?.can_add;
+
+    state.lookupOk = true;
+    state.lookupUsername = uname;
+    $('btnExport').disabled = false;
+
+    $('lookupResult').innerHTML = `
+      <div class="box-ok">
+        <div class="profile">
+          <img src="${esc(avatar)}" alt="Avatar" onerror="this.style.display='none'" />
+          <div>
+            <div style="font-weight:800; font-size:1rem;">✅ ${esc(displayName)}</div>
+            <div class="muted">@${esc(uname)} | UID: <span class="mono">${esc(uid)}</span></div>
+            <div style="margin-top:4px;">
+              ${isGold !== undefined ? `<span class="badge ${isGold ? 'b-warn' : 'b-info'}">is_gold: ${esc(isGold)}</span>` : ''}
+              ${isActiveSys !== undefined ? `<span class="badge ${isActiveSys ? 'b-ok' : 'b-info'}">is_active_in_system: ${esc(isActiveSys)}</span>` : ''}
+              ${isLockedSys !== undefined ? `<span class="badge ${isLockedSys ? 'b-err' : 'b-ok'}">is_locked_in_system: ${esc(isLockedSys)}</span>` : ''}
+              ${existCode ? `<span class="badge b-info">existing_activation_code: ${esc(existCode)}</span>` : ''}
+              ${canAdd !== undefined ? `<span class="badge ${canAdd ? 'b-ok' : 'b-err'}">can_add: ${esc(canAdd)}</span>` : ''}
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  } catch (e) {
+    $('lookupResult').innerHTML = `<div class="box-err">Lỗi kết nối khi tra cứu: ${esc(e.message)}</div>`;
+  }
+}
+
+async function exportDns() {
+  if (!getApiKey()) {
+    $('exportResult').innerHTML = '<div class="box-err">Vui lòng nhập API Key trong tab Quản trị trước khi kích hoạt.</div>';
+    return;
+  }
+  if (!state.lookupOk || !state.lookupUsername) {
+    $('exportResult').innerHTML = '<div class="box-warn">Vui lòng tra cứu tài khoản Locket hợp lệ trước khi kích hoạt.</div>';
+    return;
+  }
+  const pkg = state.selectedPkg;
+  if (!pkg) {
+    $('exportResult').innerHTML = '<div class="box-warn">Vui lòng chọn gói dịch vụ.</div>';
+    return;
+  }
+  const cost = Number(pkg.creditCost ?? 0);
+  if (state.creditsInfo && Number(state.creditsInfo.credits ?? 0) < cost) {
+    $('exportResult').innerHTML = `<div class="box-err">Số dư credit không đủ (${state.creditsInfo.credits} &lt; ${cost}). Vui lòng nạp thêm tại <a href="${esc(getBaseUrl())}/ctv/credits" target="_blank">/ctv/credits</a>!</div>`;
+    return;
+  }
+
+  const videoMode = $('videoMode').value;
+  if (videoMode === '60s') {
+    $('exportResult').innerHTML = '<div class="box-err">Chế độ 60s đang bảo trì, vui lòng chọn 5s, 15s hoặc 30s.</div>';
+    return;
+  }
+
+  const body = {
+    username: state.lookupUsername,
+    packageId: pkg.packageId || pkg.id,
+    durationDays: Number(pkg.durationDays ?? 30),
+    videoMode,
+    memberSinceDate: getMemberSinceValue()
+  };
+  const customName = $('packageNameCustom').value.trim();
+  if (customName) body.packageName = customName;
+
+  $('btnExport').disabled = true;
+  $('exportResult').innerHTML = '<div class="muted" style="margin-top:8px;">Đang kích hoạt hồ sơ DNS (chỉ gọi 1 lần, không tự động gửi lại)...</div>';
+
+  try {
+    const { res, data } = await apiFetch('/api/v1/dns/export', {
+      method: 'POST',
+      body: JSON.stringify(body)
+    });
+    if (!res.ok) {
+      $('exportResult').innerHTML = `<div class="box-err">${formatApiError(res, data)}</div>`;
+      $('btnExport').disabled = false;
+      return;
+    }
+    const d = data.data || data;
+    const installUrl = String(d.installUrl || '');
+    const fullInstall = installUrl.startsWith('/') ? `${getBaseUrl()}${installUrl}` : installUrl;
+    const reusedText = d.reused
+      ? 'Cập nhật hồ sơ cũ, giữ nguyên token (khách không phải cài lại iPhone)'
+      : 'Hồ sơ mới';
+
+    $('exportResult').innerHTML = `
+      <div class="box-ok">
+        <div style="font-weight:800; margin-bottom:6px;">🎉 Kích hoạt thành công! (${esc(reusedText)})</div>
+        <div><b>installUrl:</b> <a href="${esc(fullInstall)}" target="_blank" class="mono">${esc(installUrl)}</a></div>
+        <div><b>activationCode:</b> <span class="mono">${esc(d.activationCode || '-')}</span></div>
+        <div><b>token:</b> <span class="mono">${esc(d.token || '-')}</span></div>
+        <div><b>packageName:</b> ${esc(d.packageName || '-')}</div>
+        <div><b>expiresAt:</b> ${esc(d.expiresAt || '-')}</div>
+        <div><b>memberSinceDate:</b> ${esc(d.memberSinceDate || '-')}</div>
+        <div><b>reused:</b> ${esc(String(Boolean(d.reused)))}</div>
+      </div>
+    `;
+    loadCredits();
+    loadActivations();
+  } catch (e) {
+    $('exportResult').innerHTML = `<div class="box-err">⚠️ Lỗi mạng khi xuất hồ sơ: ${esc(e.message)}.<br/>Theo quy tắc an toàn (Mục 6), hệ thống <b>KHÔNG tự động gọi lại</b> để tránh trừ trùng lượt. Vui lòng kiểm tra danh sách hồ sơ (<code>GET /api/v1/dns/activations</code>) trước khi thử lại!</div>`;
+  } finally {
+    $('btnExport').disabled = false;
   }
 }
 
 async function loadActivations() {
-  const body = document.getElementById('activationsBody');
+  if (!getApiKey()) {
+    $('activationsResult').innerHTML = '<div class="box-warn">Chưa nhập API Key CTV.</div>';
+    return;
+  }
+  const limit = Math.min(100, Math.max(1, Number($('limitInput').value) || 20));
+  $('limitInput').value = limit;
+  $('activationsResult').textContent = 'Đang tải danh sách hồ sơ...';
+
   try {
-    const res = await apiFetch('/api/v1/dns/activations?limit=50');
-    const rows = res.activations || res.data || [];
-    if (!rows.length) { body.innerHTML = '<tr><td colspan="7" class="muted">Không có hồ sơ DNS nào.</td></tr>'; return; }
-    body.innerHTML = rows.map(r => {
-      const link = (r.installUrl || '').startsWith('http') ? r.installUrl : (getBaseUrl() + (r.installUrl || ''));
-      return `<tr>
-        <td><code>${r.activationCode || ''}</code></td>
-        <td>@${r.locketUsername || ''}</td>
-        <td>${r.packageName || ''}</td>
-        <td><span class="badge badge-${r.status || 'ACTIVE'}">${r.status || 'ACTIVE'}</span></td>
-        <td>${r.expiresAt ? new Date(r.expiresAt).toLocaleDateString('vi-VN') : ''}</td>
-        <td><a href="${link}" target="_blank">${r.installUrl || ''}</a></td>
-        <td>
-          <button class="btn btn-ok btn-sm" onclick="renewActivation('${r.id}')">Gia hạn</button>
-          <button class="btn btn-danger btn-sm" onclick="toggleActivation('${r.id}')">Bật/Tắt DNS</button>
-        </td>
-      </tr>`;
-    }).join('');
-  } catch {
-    body.innerHTML = '<tr><td colspan="7" class="muted">Không thể tải dữ liệu (kiểm tra API Key / CORS).</td></tr>';
+    const { res, data } = await apiFetch(`/api/v1/dns/activations?limit=${limit}`);
+    if (!res.ok) {
+      $('activationsResult').innerHTML = `<div class="box-err">${formatApiError(res, data)}</div>`;
+      return;
+    }
+    const list = Array.isArray(data) ? data : (data.activations || data.data || []);
+    state.activations = list;
+    renderActivations();
+  } catch (e) {
+    $('activationsResult').innerHTML = `<div class="box-err">Lỗi kết nối: ${esc(e.message)}</div>`;
   }
 }
 
+function renderActivations() {
+  const list = state.activations;
+  if (!list.length) {
+    $('activationsResult').innerHTML = '<div class="muted">Chưa có hồ sơ nào.</div>';
+    return;
+  }
+  const rows = list.map(a => {
+    const id = a.id || a._id || a.activationCode;
+    const install = String(a.installUrl || '');
+    const fullInstall = install.startsWith('/') ? `${getBaseUrl()}${install}` : install;
+    const stBadge = a.status === 'ACTIVE' ? 'b-ok' : (a.status === 'REVOKED' ? 'b-warn' : 'b-err');
+    return `
+      <tr>
+        <td class="mono">${esc(a.activationCode || '-')}</td>
+        <td><b>@${esc(a.locketUsername || '-')}</b></td>
+        <td>${esc(a.packageName || '-')}</td>
+        <td><span class="badge ${stBadge}">${esc(a.status || '-')}</span><br/><span class="muted">DNS: ${a.isDnsActive ? 'BẬT' : 'TẮT'}</span></td>
+        <td class="mono">${esc(a.expiresAt || '-')}<br/><span class="muted">Tạo: ${esc(a.createdAt || '-')}</span></td>
+        <td class="mono">${esc(a.token || '-')}</td>
+        <td><a href="${esc(fullInstall)}" target="_blank" class="mono">${esc(install || '-')}</a></td>
+        <td style="white-space:nowrap;">
+          <button class="btn btn-gold btn-sm" onclick="renewActivation('${esc(id)}')">🔄 Gia hạn</button>
+          <button class="btn btn-outline btn-sm" onclick="toggleActivation('${esc(id)}')">⏯️ Bật/Tắt DNS</button>
+        </td>
+      </tr>
+    `;
+  }).join('');
+
+  $('activationsResult').innerHTML = `
+    <table>
+      <thead>
+        <tr>
+          <th>activationCode</th><th>locketUsername</th><th>packageName</th><th>status / isDnsActive</th><th>expiresAt / createdAt</th><th>token</th><th>installUrl</th><th>Thao tác</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>
+  `;
+}
+
 async function renewActivation(id) {
-  try { await apiFetch('/api/v1/dns/activations/' + id + '/renew', { method: 'POST' }); loadActivations(); }
-  catch (e) { alert('Lỗi gia hạn: ' + e.message); }
+  const pkgId = $('renewPkgSelect').value;
+  if (pkgId && state.creditsInfo) {
+    const pkg = state.packages.find(p => (p.packageId || p.id) === pkgId);
+    const cost = Number(pkg?.creditCost ?? 0);
+    if (Number(state.creditsInfo.credits ?? 0) < cost) {
+      $('actionFeedback').innerHTML = `<div class="box-err">Số dư credit không đủ (${state.creditsInfo.credits} &lt; ${cost}). Vui lòng nạp thêm tại /ctv/credits!</div>`;
+      return;
+    }
+  }
+  $('actionFeedback').innerHTML = '<div class="muted" style="margin-top:8px;">Đang gia hạn hồ sơ...</div>';
+  try {
+    const body = pkgId ? { packageId: pkgId } : {};
+    const { res, data } = await apiFetch(`/api/v1/dns/activations/${encodeURIComponent(id)}/renew`, {
+      method: 'POST',
+      body: JSON.stringify(body)
+    });
+    if (!res.ok) {
+      $('actionFeedback').innerHTML = `<div class="box-err">${formatApiError(res, data)}</div>`;
+      return;
+    }
+    const d = data.data || data;
+    const install = String(d.installUrl || '');
+    const fullInstall = install.startsWith('/') ? `${getBaseUrl()}${install}` : install;
+    $('actionFeedback').innerHTML = `
+      <div class="box-ok">
+        ✅ Gia hạn thành công! <b>newExpiresAt:</b> ${esc(d.newExpiresAt || '-')} |
+        <b>durationDays:</b> ${esc(d.durationDays ?? '-')} |
+        <b>creditsCharged:</b> ${esc(d.creditsCharged ?? '-')} |
+        <b>installUrl:</b> <a href="${esc(fullInstall)}" target="_blank" class="mono">${esc(install)}</a>
+      </div>
+    `;
+    loadCredits();
+    loadActivations();
+  } catch (e) {
+    $('actionFeedback').innerHTML = `<div class="box-err">Lỗi kết nối khi gia hạn: ${esc(e.message)}</div>`;
+  }
 }
 
 async function toggleActivation(id) {
-  try { await apiFetch('/api/v1/dns/activations/' + id + '/toggle', { method: 'POST' }); loadActivations(); }
-  catch (e) { alert('Lỗi bật/tắt DNS: ' + e.message); }
+  $('actionFeedback').innerHTML = '<div class="muted" style="margin-top:8px;">Đang đảo trạng thái DNS...</div>';
+  try {
+    const { res, data } = await apiFetch(`/api/v1/dns/activations/${encodeURIComponent(id)}/toggle`, {
+      method: 'POST',
+      body: JSON.stringify({})
+    });
+    if (!res.ok) {
+      $('actionFeedback').innerHTML = `<div class="box-err">${formatApiError(res, data)}</div>`;
+      return;
+    }
+    const d = data.data || data;
+    const item = state.activations.find(x => (x.id || x._id || x.activationCode) === id);
+    if (item) {
+      if (d.isDnsActive !== undefined) item.isDnsActive = d.isDnsActive;
+      else item.isDnsActive = !item.isDnsActive;
+      item.status = d.status || (item.isDnsActive ? 'ACTIVE' : 'REVOKED');
+    }
+    renderActivations();
+    $('actionFeedback').innerHTML = `<div class="box-ok">✅ Đã cập nhật trạng thái DNS (không trừ lượt): <b>${item ? esc(item.status) : 'OK'}</b></div>`;
+  } catch (e) {
+    $('actionFeedback').innerHTML = `<div class="box-err">Lỗi kết nối khi bật/tắt DNS: ${esc(e.message)}</div>`;
+  }
 }
 
-function renderAdminPackages() {
-  const wrap = document.getElementById('adminPkgList');
-  wrap.innerHTML = state.packages.map(p => {
-    const val = getEffectivePrice(p);
-    return `<div class="row mt8" style="align-items:center;">
-      <div style="flex:1"><b>${p.name}</b> <span class="muted">(Tối thiểu: ${fmtMoney(p.minRetailPrice)})</span></div>
-      <input id="price_${p.id}" type="number" value="${val}" style="width:130px" />
-      <button class="btn btn-outline btn-sm" onclick="savePkgPrice('${p.id}', ${p.minRetailPrice})">Lưu giá</button>
-    </div>`;
-  }).join('');
+function saveConfig() {
+  localStorage.setItem('locket_base_url', getBaseUrl());
+  localStorage.setItem('locket_api_key', getApiKey());
+  $('configMsg').innerHTML = '<div class="box-ok">✅ Đã lưu cấu hình. Đang tải gói, số dư và danh sách hồ sơ...</div>';
+  loadPackages();
+  loadCredits();
+  loadActivations();
 }
 
-function savePkgPrice(id, minPrice) {
-  const val = Number(document.getElementById('price_' + id).value);
-  if (val < minPrice) { alert('Giá bán lẻ không được thấp hơn minRetailPrice (' + fmtMoney(minPrice) + ')'); return; }
-  const custom = getCustomPrices();
-  custom[id] = val;
-  localStorage.setItem('TLOC_CUSTOM_PRICES', JSON.stringify(custom));
-  renderPackages();
-  alert('Đã cập nhật giá gói!');
-}
-
-function createCoupon() {
-  const code = document.getElementById('newCouponCode').value.trim().toUpperCase();
-  const pct = Number(document.getElementById('newCouponPct').value);
-  if (!code || pct < 1 || pct > 100) { alert('Nhập mã và % giảm hợp lệ (1-100).'); return; }
-  const coupons = getCoupons();
-  coupons[code] = pct;
-  localStorage.setItem('TLOC_COUPONS', JSON.stringify(coupons));
-  renderCoupons();
-}
-
-function deleteCoupon(code) {
-  const coupons = getCoupons();
-  delete coupons[code];
-  localStorage.setItem('TLOC_COUPONS', JSON.stringify(coupons));
-  renderCoupons();
-}
-
-function renderCoupons() {
-  const coupons = getCoupons();
-  document.getElementById('couponList').innerHTML = Object.entries(coupons).map(([c, p]) =>
-    `<span class="badge badge-warn" style="margin-right:6px;">${c}: -${p}% <b style="cursor:pointer" onclick="deleteCoupon('${c}')">×</b></span>`
-  ).join('');
-}
-
-document.getElementById('cfgBaseUrl').value = getBaseUrl();
-document.getElementById('cfgApiKey').value = getApiKey();
-renderCoupons();
-loadPackages();
+window.addEventListener('DOMContentLoaded', () => {
+  $('baseUrlInput').value = localStorage.getItem('locket_base_url') || DEFAULT_BASE;
+  $('apiKeyInput').value = localStorage.getItem('locket_api_key') || '';
+  loadPackages();
+  if (getApiKey()) {
+    loadCredits();
+    loadActivations();
+  }
+});
 </script>
 </body>
 </html>
+
