@@ -80,7 +80,7 @@
     <div class="card">
       <h2>Bước 1: Tra cứu tài khoản Locket</h2>
       <div class="row">
-        <input id="lookupInput" placeholder="Nhập username hoặc link Locket (vd: locket.cam/...)" style="flex:1" />
+        <input id="lookupInput"  oninput="resetVerifiedLookup()"placeholder="Nhập username hoặc link Locket (vd: locket.cam/...)" style="flex:1" />
         <button class="btn btn-gold" onclick="lookupUser()">Tra cứu</button>
       </div>
       <div id="lookupStatus" class="muted mt8"></div>
@@ -187,7 +187,7 @@
 </div>
 
 <script>
-const DEFAULT_BASE = 'https:/' + '/uplocket.io.vn';
+let verifiedProfile = null; const DEFAULT_BASE = 'https:/' + '/uplocket.io.vn';
 const DEFAULT_PACKAGES = [
 { id: 'pkg_trial_3d', code: 'TRIAL_3D', name: 'Gói dùng thử (Trial)', price: 0, originalPrice: 79000, minRetailPrice: 0, durationDays: 3, duration: '3 ngày', isTrial: true, lifetime: false, creditCost: 0, videoMode: '30s', aiQuota: 0, badge: 'Trial' },
   { id: 'pkg_gold_1y', code: 'GOLD_1Y', name: 'Locket Gold 1 Năm', price: 20000, originalPrice: 399000, minRetailPrice: 20000, durationDays: 365, duration: '365 ngày', isTrial: false, lifetime: false, creditCost: 2, videoMode: '30s', aiQuota: 1, badge: 'Ưu đãi lớn' },
@@ -249,61 +249,11 @@ function parseUsername(raw) {
   return s.replace(/^@/, '');
 }
 
-async function lookupUser() {
-  const raw = document.getElementById('lookupInput').value;
-  const username = parseUsername(raw);
-  const statusEl = document.getElementById('lookupStatus');
-  if (!username) { statusEl.textContent = 'Vui lòng nhập username hoặc link Locket.'; return; }
-  statusEl.textContent = 'Đang tra cứu...';
-  const fallbackAvatar = 'https:/' + '/api.dicebear.com/7.x/thumbs/svg?seed=' + encodeURIComponent(username);
-  try {
-    let data;
-    try {
-      data = await apiFetch('/api/v1/dns/lookup?username=' + encodeURIComponent(username));
-    } catch {
-      data = await apiFetch('/api/locket/lookup', { method: 'POST', body: JSON.stringify({ username }) });
-    }
-    const profile = data.profile || data.data || data;
-    const exists = profile.exists !== false;
-    const provisional = Boolean(data.provisional || profile.provisional);
-    renderProfile({
-      username: profile.username || username,
-      name: profile.displayName || profile.name || username,
-      uid: profile.uid || profile.id || 'N/A',
-      avatar: profile.avatarUrl || profile.photoURL || fallbackAvatar,
-      exists,
-      provisional,
-      demo: false
-    });
-    statusEl.textContent = exists ? 'Tra cứu thành công.' : 'Không tìm thấy tài khoản.';
-  } catch (err) {
-    renderProfile({
-      username,
-      name: username + ' (Demo)',
-      uid: 'demo_uid_' + username.slice(0, 6),
-      avatar: fallbackAvatar,
-      exists: true,
-      provisional: true,
-      demo: true
-    });
-    statusEl.textContent = 'Đang dùng dữ liệu mô phỏng dự phòng (chưa có API Key hoặc bị chặn CORS).';
-  }
-}
-
-function renderProfile(p) {
-  state.lookedUpUser = p;
-  document.getElementById('payNote').textContent = 'TLOC ' + p.username;
-  const box = document.getElementById('profileResult');
-  box.className = 'profile-box';
-  box.innerHTML = `
-    <img src="${p.avatar}" alt="avatar" />
-    <div>
-      <div><b>${p.name}</b> <span class="badge ${p.provisional ? 'badge-warn' : 'badge-ACTIVE'}">${p.provisional ? 'Provisional' : (p.exists ? 'Hợp lệ' : 'Không tồn tại')}</span></div>
-      <div class="muted">@${p.username} · UID: <code>${p.uid}</code></div>
-    </div>
-  `;
-}
-
+function resetVerifiedLookup() { verifiedProfile = null; state.lookedUpUser = null; const box = document.getElementById('profileResult'); box.className = 'hidden'; box.innerHTML = ''; document.getElementById('lookupStatus').textContent = ''; }
+  
+async function lookupUser() { const raw = document.getElementById('lookupInput').value; const u = parseUsername(raw); const status = document.getElementById('lookupStatus'); const box = document.getElementById('profileResult'); verifiedProfile = null; state.lookedUpUser = null; if (!u) { status.textContent = 'Vui lòng nhập username hợp lệ.'; box.className = 'hidden'; box.innerHTML = ''; return; } status.textContent = 'Đang tra cứu tài khoản Locket thật...'; box.className = 'hidden'; box.innerHTML = ''; const baseUrl = getBaseUrl(); const apiKey = getApiKey(); let data = null; let notFound = false; let apiError = null; try { const res = await fetch(baseUrl + '/api/locket/lookup', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username: u }) }); const json = await res.json().catch(() => null); if (res.status === 404 || (json && (json.exists === false || json.success === false))) { notFound = true; data = json; } else if (res.ok && json) { data = json.data || json; } else { apiError = 'HTTP ' + res.status; } } catch (e) { apiError = e.message || 'Lỗi kết nối'; } if (!notFound && (!data || !data.uid) && apiKey) { try { const res2 = await fetch(baseUrl + '/api/v1/dns/lookup?username=' + encodeURIComponent(u), { headers: { 'Authorization': 'Bearer ' + apiKey } }); const json2 = await res2.json().catch(() => null); if (res2.status === 404 || (json2 && (json2.exists === false || json2.success === false))) { notFound = true; data = json2; } else if (res2.ok && json2) { data = json2.data || json2; apiError = null; } else if (!apiError) { apiError = 'HTTP ' + res2.status; } } catch (e2) { if (!apiError) apiError = e2.message || 'Lỗi kết nối'; } } if (notFound || (data && (data.exists === false || data.success === false))) { status.textContent = ''; box.className = 'profile-box'; box.style.borderColor = '#DC2626'; box.style.background = '#FEF2F2'; box.innerHTML = '<div style="color:#DC2626;font-weight:600">❌ Tài khoản @' + u + ' không tồn tại trên Locket! Vui lòng kiểm tra lại chính xác username.</div>'; return; } if (data && (data.provisional === true || (data.uid && String(data.uid).startsWith('usr_')))) { status.textContent = ''; box.className = 'profile-box'; box.style.borderColor = '#D97706'; box.style.background = '#FFFBEB'; box.innerHTML = '<div style="color:#B45309;font-weight:600">⚠️ Chưa xác thực được với Locket (đang giới hạn tần suất). Vui lòng thử lại sau ít phút!</div>'; return; } if (!data || data.exists !== true || !data.uid) { status.textContent = ''; box.className = 'profile-box'; box.style.borderColor = '#DC2626'; box.style.background = '#FEF2F2'; box.innerHTML = '<div style="color:#DC2626;font-weight:600">❌ Không thể xác thực tài khoản (' + (apiError || 'lỗi kết nối mạng/CORS') + '). Vui lòng kiểm tra kết nối hoặc cấu hình API Key trong tab Quản trị.</div>'; return; } const rawAvatar = data.avatar || ''; const avatarUrl = rawAvatar.startsWith('/') ? baseUrl + rawAvatar : (rawAvatar || (baseUrl + '/api/locket/avatar/' + encodeURIComponent(u))); const profile = { username: data.username || u, name: data.name || u, uid: data.uid, avatar: avatarUrl, hasGold: !!(data.hasGold || data.isGold), exists: true }; verifiedProfile = profile; state.lookedUpUser = profile; status.textContent = ''; renderProfile(profile); }
+function renderProfile(p) { state.lookedUpUser = p; document.getElementById('payNote').textContent = 'TLOC ' + p.username; const box = document.getElementById('profileResult'); box.className = 'profile-box'; box.style.borderColor = '#16A34A'; box.style.background = '#F0FDF4'; const fallbackImg = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(p.name || p.username) + '&background=16A34A&color=ffffff'; box.innerHTML = '<img src="' + p.avatar + '" alt="' + p.username + '" style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid #16A34A" onerror="this.onerror=null;this.src=\'' + fallbackImg + '\'" /><div><div style="font-weight:700;font-size:15px">' + p.name + ' <span class="badge ' + (p.hasGold ? 'badge-warn' : 'badge-ACTIVE') + '">' + (p.hasGold ? 'Đang dùng Gold' : 'Chưa có Gold') + '</span> <span class="badge badge-ACTIVE">Có thể nâng cấp</span></div><div class="muted" style="font-size:13px">@' + p.username + ' • UID: <code>' + p.uid + '</code></div></div>'; }
+  
 async function loadPackages() { if (!state.packages || !state.packages.length) state.packages = [...DEFAULT_PACKAGES]; renderPackages(); renderAdminPackages(); if (!getApiKey()) return;
   try {
     const res = await apiFetch('/api/v1/packages');
@@ -384,8 +334,7 @@ function updatePriceSummary() {
 
 function applyPricePreset(mode) { const presets = { uplocket: { pkg_trial_3d: 0, pkg_gold_1y: 20000, pkg_gold_lifetime: 30000, pkg_ctv_1m: 49000, pkg_ctv_3m: 99000, pkg_ctv_6m: 149000 }, tloc: { pkg_trial_3d: 0, pkg_gold_1y: 20000, pkg_gold_lifetime: 50000, pkg_ctv_1m: 50000, pkg_ctv_3m: 89000, pkg_ctv_6m: 119000 } }; const map = presets[mode]; if (!map) return; localStorage.setItem('TLOC_CUSTOM_PRICES', JSON.stringify(map)); renderPackages(); renderAdminPackages(); } async function exportDns() {
   const out = document.getElementById('exportResult');
-  const username = state.lookedUpUser?.username || parseUsername(document.getElementById('lookupInput').value);
-  if (!username) { out.innerHTML = '<span style="color:var(--err)">Vui lòng tra cứu username ở Bước 1 trước.</span>'; return; }
+const u = parseUsername(document.getElementById('lookupInput').value); if (!u || !verifiedProfile || verifiedProfile.username !== u) { out.innerHTML = '<span style="color:var(--err)">❌ Vui lòng bấm <b>Tra cứu</b> và xác thực đúng tài khoản Locket tồn tại ở Bước 1 trước khi kích hoạt!</span>'; return; } const username = verifiedProfile.username;
   const pkg = state.packages.find(p => p.id === state.selectedPkgId) || state.packages[0] || {}; const packageId = pkg.id || state.selectedPkgId;
   const memberSinceDate = getMemberSinceDate();
   out.textContent = 'Đang kích hoạt DNS...';
